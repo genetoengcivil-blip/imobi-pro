@@ -1,6 +1,7 @@
-import mercadopago from "mercadopago";
-import { ENV } from "./env.js";
+import { MercadoPagoConfig, Payment } from "mercadopago";
 
-mercadopago.configure({ access_token: ENV.MP_ACCESS_TOKEN });
+const client = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN
+});
 
-export const mp = mercadopago;
+export const mpPayment = new Payment(client);

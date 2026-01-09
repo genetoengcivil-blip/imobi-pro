@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { mp } from "../_lib/mp.js";
+import { mpPayment } from "../_lib/mp.js";
 import { supabaseAdmin } from "../_lib/supabaseAdmin.js";
 import { json, readBody } from "../_lib/utils.js";
 
@@ -39,8 +39,9 @@ export default async function handler(req, res) {
       payer: { email: input.payer.email }
     };
 
-    const mpResp = await mp.payment.save(paymentPayload);
-    const p = mpResp?.body;
+    const mpResp = await mpPayment.create({ body: paymentPayload });
+    const p = mpResp;
+
 
     if (!p?.id) {
       return json(res, 400, { error: "Falha ao criar pagamento no Mercado Pago", details: mpResp?.body || null });
