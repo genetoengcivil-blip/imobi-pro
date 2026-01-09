@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro • ImobiPro</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --blue:#2563eb;
+      --blue-dark:#1e40af;
+      --blue-light:#dbeafe;
+      --gray:#e5e7eb;
+      --text-gray:#94a3b8;
+    }
+
+    /* ===== STEPPER (IGUAL AO PRINT) ===== */
+    .topbar{
+      background:#fff;
+      border-bottom:1px solid #e5e7eb;
+    }
+    .brand{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:.6rem;
+      padding:18px 16px 6px;
+      font-weight:900;
+      font-size:22px;
+    }
+    .brand .pro{ color: var(--blue); }
+    .stepper-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px 16px 18px;
+    }
+    .step-circle{
+      width:42px;height:42px;border-radius:9999px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:15px;
+    }
+    .step-completed{
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.35);
+    }
+    .step-active{
+      background:#fff;color:#2563eb;border:2px solid #2563eb;
+      box-shadow:0 0 0 6px rgba(37,99,235,.08),0 10px 25px rgba(37,99,235,.25);
+    }
+    .step-inactive{
+      background:#f1f5f9;color:#64748b;border:2px solid #e2e8f0;
+    }
+    .step-text{
+      margin-top:10px;font-size:13px;font-weight:600;
+      color:#64748b;white-space:nowrap;
+    }
+    .step-text-active{color:#2563eb}
+    .step-bar{
+      width:90px;height:4px;background:#e5e7eb;
+      margin:0 12px;border-radius:9999px;
+    }
+    .step-bar-completed{
+      background:linear-gradient(90deg,#2563eb,#1e40af);
+    }
+
+    /* ===== FORM ===== */
+    .input-field {
+      position: relative;
+    }
+    .input-field input,
+    .input-field select {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem 1rem 1rem 3rem;
+      font-size: 1rem;
+      transition: all 0.25s;
+      background:#fff;
+    }
+    .input-field input:focus,
+    .input-field select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+    }
+    .input-field.error input,
+    .input-field.error select {
+      border-color: #f43f5e;
+    }
+    .input-field.error input:focus,
+    .input-field.error select:focus {
+      border-color: #f43f5e;
+      box-shadow: 0 0 0 4px rgba(244,63,94,.10);
+    }
+    .input-field .icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    .error-msg {
+      color: #f43f5e;
+      font-size: 0.875rem;
+      margin-top: 0.35rem;
+      display:none;
+    }
+    .input-field.error + .error-msg { display:block; }
+
+    /* ===== CARDS ===== */
+    .card-select{
+      border:2px solid #e5e7eb;
+      border-radius:20px;
+      padding:22px;
+      cursor:pointer;
+      transition:.25s;
+      text-align:left;
+      background:#fff;
+    }
+    .card-select.active{
+      border-color:var(--blue);
+      background:var(--blue-light);
+      box-shadow:0 0 0 6px rgba(37,99,235,.18);
+    }
+
+    /* ===== TOGGLE ===== */
+    .toggle-btn{
+      padding:.55rem 1rem;
+      border-radius:12px;
+      border:2px solid #e5e7eb;
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+      transition:.2s;
+      min-width:56px;
+    }
+    .toggle-btn.active{
+      background:var(--blue);
+      border-color:var(--blue);
+      color:#fff;
+    }
+    .toggle-btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    /* ===== PILLS ===== */
+    .pill-btn{
+      padding:1rem;
+      border:2px solid #e5e7eb;
+      border-radius:16px;
+      background:#fff;
+      font-weight:900;
+      cursor:pointer;
+      transition:.2s;
+      text-align:center;
+    }
+    .pill-btn.active{
+      border-color:var(--blue);
+      background:var(--blue-light);
+      color:var(--blue);
+      box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    /* ===== LOADER ===== */
+    .loader { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</head>
+
+<body class="bg-slate-50">
+
+  <!-- ================= HEADER / STEPPER ================= -->
+<header class="bg-white border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-6 py-8">
+
+    <div class="flex justify-center mb-6">
+      <a href="index.html" class="flex items-center gap-3 text-2xl font-extrabold text-slate-900">
+        <i data-lucide="home" class="w-6 h-6 text-emerald-500"></i>
+        Imobi<span class="text-blue-600">Pro</span>
+      </a>
+    </div>
+
+    <div class="flex items-center justify-center">
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-completed">1</div>
+        <span class="step-text">Escolha o Plano</span>
+      </div>
+
+      <div class="step-bar step-bar-completed"></div>
+
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-active">2</div>
+        <span class="step-text step-text-active">Cadastro</span>
+      </div>
+
+      <div class="step-bar"></div>
+
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-inactive">3</div>
+        <span class="step-text">Pagamento</span>
+      </div>
+
+      <div class="step-bar"></div>
+
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-inactive">4</div>
+        <span class="step-text">Acesso ao CRM</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-b from-blue-600 to-blue-800 text-white py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <span class="inline-flex items-center gap-2 mb-6 px-4 py-1 rounded-full bg-white/20 text-sm font-semibold">
+        <i data-lucide="shield-check" class="w-4 h-6"></i>
+        Cadastro rápido • Ativação imediata • Sem fidelidade
+      </span>
+
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
+        Crie sua conta no <span class="text-blue-200">ImobiPro</span>
+      </h1>
+
+      <p class="text-blue-800 text-lg">
+        Você está a um passo de organizar seus leads, imóveis e vendas em um só lugar.
+      </p>
+    </div>
+  </section>
+
+  <!-- FORM CARD -->
+  <section class="-mt-24 pb-24 px-6">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl p-6 md:p-10">
+
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-extrabold mb-2">Dados para criar sua conta</h2>
+          <p class="text-slate-600">
+            Plano selecionado: <strong class="text-blue-600" id="plano-nome">Profissional</strong>
+            <span id="plano-detalhe" class="text-slate-500 ml-2">• 7 dias grátis de Premium</span>
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 text-sm">
+          <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2">
+            <i data-lucide="lock" class="w-4 h-4 text-slate-700"></i>
+            Pagamento seguro
+          </div>
+          <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-600"></i>
+            Sem fidelidade
+          </div>
+        </div>
+      </div>
+
+      <!-- SELEÇÃO TIPO DE CONTA -->
+      <div class="grid md:grid-cols-2 gap-6 mb-10">
+        <div id="corretor" class="card-select active">
+          <div class="flex items-start gap-3">
+            <div class="h-10 w-10 rounded-xl flex items-center justify-center bg-blue-600 text-white" data-iconbox="corretor">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-lg">Sou corretor(a)</h3>
+              <p class="text-sm text-slate-600 mt-1">Conta individual para corretor autônomo</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="imobiliaria" class="card-select">
+          <div class="flex items-start gap-3">
+            <div class="h-10 w-10 rounded-xl flex items-center justify-center bg-slate-100 text-slate-700" data-iconbox="imobiliaria">
+              <i data-lucide="building-2" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-lg">Sou imobiliária</h3>
+              <p class="text-sm text-slate-600 mt-1">Conta para equipes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DADOS BÁSICOS -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <!-- Nome -->
+        <div>
+          <label class="block text-sm font-extrabold text-slate-900 mb-2">Nome completo</label>
+          <div class="input-field" id="field-nome">
+            <div class="icon"><i data-lucide="user" class="w-5 h-5"></i></div>
+            <input type="text" id="nome" placeholder="Ex.: Maria Silva" autocomplete="name">
+          </div>
+          <div class="error-msg" id="error-nome"></div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-extrabold text-slate-900 mb-2">E-mail</label>
+          <div class="input-field" id="field-email">
+            <div class="icon"><i data-lucide="mail" class="w-5 h-5"></i></div>
+            <input type="email" id="email" placeholder="voce@exemplo.com" autocomplete="email">
+          </div>
+          <div class="error-msg" id="error-email"></div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div>
+          <label class="block text-sm font-extrabold text-slate-900 mb-2">WhatsApp</label>
+          <div class="input-field" id="field-telefone">
+            <div class="icon"><i data-lucide="phone" class="w-5 h-5"></i></div>
+            <input type="tel" id="telefone" placeholder="(83) 99999-9999" autocomplete="tel">
+          </div>
+          <div class="error-msg" id="error-telefone"></div>
+        </div>
+
+        <!-- CPF/CNPJ (ALINHADO COMO NO PRINT: label à esquerda e PF/PJ à direita) -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-extrabold text-slate-900" id="label-cpf-cnpj">CPF</label>
+            <div class="flex gap-2">
+              <button type="button" id="toggle-pf" class="toggle-btn active">PF</button>
+              <button type="button" id="toggle-pj" class="toggle-btn">PJ</button>
+            </div>
+          </div>
+
+          <div class="input-field" id="field-cpf-cnpj">
+            <div class="icon"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+            <input type="text" id="cpf-cnpj" placeholder="000.000.000-00" inputmode="numeric">
+          </div>
+          <div class="error-msg" id="error-cpf-cnpj"></div>
+        </div>
+
+        <!-- CRECI -->
+        <div>
+          <label class="block text-sm font-extrabold text-slate-900 mb-2">CRECI (opcional)</label>
+          <div class="input-field">
+            <div class="icon"><i data-lucide="landmark" class="w-5 h-5"></i></div>
+            <input type="text" id="creci" placeholder="Ex.: PB-12345">
+          </div>
+        </div>
+      </div>
+
+      <!-- ENDEREÇO -->
+      <div class="mt-10 mb-10">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-2">Endereço</h3>
+        <p class="text-slate-600 mb-6">
+          Ajuda a configurar seu perfil e documentos.
+          <span class="text-blue-600 font-semibold">Digite o CEP para preencher automaticamente!</span>
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- CEP -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-sm font-extrabold text-slate-900">CEP (opcional)</label>
+              <span id="cep-loading" class="text-sm font-bold text-blue-600 hidden">Buscando...</span>
+            </div>
+
+            <div class="input-field" id="field-cep">
+              <div class="icon"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+              <input type="text" id="cep" placeholder="00000-000" maxlength="9" autocomplete="postal-code" inputmode="numeric">
+              <div class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden" id="cep-loader">
+                <i data-lucide="loader-2" class="w-5 h-5 text-blue-600 loader"></i>
+              </div>
+            </div>
+            <div class="error-msg" id="error-cep"></div>
+            <p id="cep-success" class="text-sm text-emerald-600 mt-2 hidden">✓ Endereço preenchido automaticamente</p>
+          </div>
+
+          <!-- Rua -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-extrabold text-slate-900 mb-2">Rua / Logradouro (opcional)</label>
+            <div class="input-field">
+              <div class="icon"><i data-lucide="home" class="w-5 h-5"></i></div>
+              <input type="text" id="endereco" placeholder="Ex.: Av. Epitácio Pessoa" autocomplete="street-address">
+            </div>
+          </div>
+
+          <!-- Número -->
+          <div>
+            <label class="block text-sm font-extrabold text-slate-900 mb-2">Número (opcional)</label>
+            <div class="input-field">
+              <div class="icon"><i data-lucide="hash" class="w-5 h-5"></i></div>
+              <input type="text" id="numero" placeholder="Ex.: 100">
+            </div>
+          </div>
+
+          <!-- Bairro -->
+          <div>
+            <label class="block text-sm font-extrabold text-slate-900 mb-2">Bairro (opcional)</label>
+            <div class="input-field">
+              <div class="icon"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+              <input type="text" id="bairro" placeholder="Ex.: Tambaú">
+            </div>
+          </div>
+
+          <!-- UF -->
+          <div>
+            <label class="block text-sm font-extrabold text-slate-900 mb-2">UF</label>
+            <div class="input-field" id="field-uf">
+              <select id="uf">
+                <option value="">Selecione...</option>
+                <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option>
+                <option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option>
+                <option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+                <option value="MG">MG</option><option value="PA">PA</option><option value="PB" selected>PB</option><option value="PR">PR</option>
+                <option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option>
+                <option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+                <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+              </select>
+            </div>
+            <div class="error-msg" id="error-uf"></div>
+          </div>
+
+          <!-- Cidade -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-extrabold text-slate-900 mb-2">Cidade</label>
+            <div class="input-field" id="field-cidade">
+              <div class="icon"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+              <input type="text" id="cidade" placeholder="Ex.: João Pessoa" autocomplete="address-level2">
+            </div>
+            <div class="error-msg" id="error-cidade"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOLUME DE IMÓVEIS -->
+      <div class="mt-10 mb-10">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-2">Seu volume de imóveis</h3>
+        <p class="text-slate-600 mb-4">Isso ajuda a configurar seu CRM com o melhor padrão.</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button type="button" data-range="ate20" class="pill-btn">Até 20</button>
+          <button type="button" data-range="20a50" class="pill-btn active">20–50</button>
+          <button type="button" data-range="50a200" class="pill-btn">50–200</button>
+          <button type="button" data-range="mais200" class="pill-btn">+200</button>
+        </div>
+      </div>
+
+      <!-- TERMOS E LGPD -->
+      <div class="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6 mb-10">
+        <h3 class="text-base font-extrabold text-slate-900 mb-3">Políticas</h3>
+
+        <div class="mb-4">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" id="termos" class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600">
+            <span class="text-slate-700">
+              Li e aceito os
+              <a href="termos_de_uso.html" class="text-blue-600 font-semibold hover:underline">Termos de Uso</a>.
+            </span>
+          </label>
+          <div class="error-msg" id="error-termos"></div>
+        </div>
+
+        <div>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" id="lgpd" class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-600">
+            <span class="text-slate-700">
+              Concordo com a
+              <a href="politica_de_privacidade.html" class="text-blue-600 font-semibold hover:underline">Política de Privacidade (LGPD)</a>.
+            </span>
+          </label>
+          <div class="error-msg" id="error-lgpd"></div>
+        </div>
+      </div>
+
+      <!-- BOTÕES -->
+      <div class="mt-10 flex flex-col md:flex-row items-center justify-end gap-6">
+        <button id="btn-continuar" class="w-full md:w-auto px-12 py-4 rounded-xl text-lg font-extrabold transition-colors flex items-center justify-center gap-3 bg-blue-600 text-white hover:bg-blue-700 shadow-[0_18px_36px_rgba(37,99,235,0.45)]">
+          Continuar para pagamento
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="mt-4 text-center text-sm text-slate-500">
+        🔒 Pagamento seguro • Ativação imediata • Cancele quando quiser
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // Ícones
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initPage();
+      setupEventListeners();
+    });
+
+    const state = {
+      plano: new URLSearchParams(window.location.search).get('plan') || new URLSearchParams(window.location.search).get('plano') || 'pro',
+      planos: { basic: 'Básico', pro: 'Profissional', premium: 'Premium' },
+      tipoConta: 'corretor',
+      tipoPessoa: 'pf',
+      uf: 'PB',
+      rangeImoveis: '20a50',
+      formData: {
+        nome: '', email: '', telefone: '', cpfCnpj: '',
+        creci: '', cep: '', endereco: '', numero: '', bairro: '', cidade: ''
+      },
+      errors: {}
+    };
+
+    function initPage(){
+      const planoNome = state.planos[state.plano] || 'Profissional';
+      document.getElementById('plano-nome').textContent = planoNome;
+      document.getElementById('plano-detalhe').textContent =
+        (state.plano === 'premium') ? '• Acesso imediato' : '• 7 dias grátis de Premium';
+    }
+
+    const onlyDigits = (v) => (v || '').replace(/\D/g, '');
+
+    function formatPhoneBR(value){
+      const d = onlyDigits(value).slice(0, 11);
+      if (!d) return '';
+      if (d.length <= 2) return `(${d}`;
+      if (d.length <= 7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+      return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+    }
+
+    function formatCpfCnpj(value){
+      const d = onlyDigits(value).slice(0, 14);
+      if (!d) return '';
+
+      if (state.tipoPessoa === 'pf'){
+        const p1 = d.slice(0,3), p2 = d.slice(3,6), p3 = d.slice(6,9), p4 = d.slice(9,11);
+        return `${p1}${p2 ? '.'+p2 : ''}${p3 ? '.'+p3 : ''}${p4 ? '-'+p4 : ''}`;
+      } else {
+        const p1=d.slice(0,2), p2=d.slice(2,5), p3=d.slice(5,8), p4=d.slice(8,12), p5=d.slice(12,14);
+        return `${p1}${p2?'.'+p2:''}${p3?'.'+p3:''}${p4?'/'+p4:''}${p5?'-'+p5:''}`;
+      }
+    }
+
+    function formatCEP(value){
+      const d = onlyDigits(value).slice(0, 8);
+      if (!d) return '';
+      if (d.length <= 5) return d;
+      return `${d.slice(0,5)}-${d.slice(5)}`;
+    }
+
+    function isValidEmail(email){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((email || '').trim());
+    }
+
+    function setTipoConta(tipo){
+      state.tipoConta = tipo;
+
+      const corretor = document.getElementById('corretor');
+      const imobiliaria = document.getElementById('imobiliaria');
+      corretor.classList.remove('active');
+      imobiliaria.classList.remove('active');
+
+      const boxCor = corretor.querySelector('[data-iconbox="corretor"]');
+      const boxImo = imobiliaria.querySelector('[data-iconbox="imobiliaria"]');
+
+      if (tipo === 'corretor'){
+        corretor.classList.add('active');
+        boxCor.className = 'h-10 w-10 rounded-xl flex items-center justify-center bg-blue-600 text-white';
+        boxImo.className = 'h-10 w-10 rounded-xl flex items-center justify-center bg-slate-100 text-slate-700';
+        document.getElementById('toggle-pf').disabled = false;
+        setTipoPessoa('pf');
+      } else {
+        imobiliaria.classList.add('active');
+        boxImo.className = 'h-10 w-10 rounded-xl flex items-center justify-center bg-blue-600 text-white';
+        boxCor.className = 'h-10 w-10 rounded-xl flex items-center justify-center bg-slate-100 text-slate-700';
+        document.getElementById('toggle-pf').disabled = true;
+        setTipoPessoa('pj');
+      }
+    }
+
+    function setTipoPessoa(tipo){
+      state.tipoPessoa = tipo;
+      const pfBtn = document.getElementById('toggle-pf');
+      const pjBtn = document.getElementById('toggle-pj');
+
+      pfBtn.classList.remove('active');
+      pjBtn.classList.remove('active');
+
+      const label = document.getElementById('label-cpf-cnpj');
+      const input = document.getElementById('cpf-cnpj');
+
+      if (tipo === 'pf'){
+        pfBtn.classList.add('active');
+        label.textContent = 'CPF';
+        input.placeholder = '000.000.000-00';
+      } else {
+        pjBtn.classList.add('active');
+        label.textContent = 'CNPJ';
+        input.placeholder = '00.000.000/0000-00';
+      }
+
+      input.value = '';
+      state.formData.cpfCnpj = '';
+      clearError('cpf-cnpj');
+    }
+
+    function setRangeImoveis(range){
+      state.rangeImoveis = range;
+      document.querySelectorAll('[data-range]').forEach(btn => btn.classList.remove('active'));
+      const active = document.querySelector(`[data-range="${range}"]`);
+      if (active) active.classList.add('active');
+    }
+
+    function showError(fieldId, message){
+      const field = document.getElementById(`field-${fieldId}`);
+      const err = document.getElementById(`error-${fieldId}`);
+      if (field) field.classList.add('error');
+      if (err) { err.textContent = message; err.style.display = 'block'; }
+    }
+
+    function clearError(fieldId){
+      const field = document.getElementById(`field-${fieldId}`);
+      const err = document.getElementById(`error-${fieldId}`);
+      if (field) field.classList.remove('error');
+      if (err) { err.textContent = ''; err.style.display = 'none'; }
+    }
+
+    function validateAll(){
+      let ok = true;
+
+      const nome = (state.formData.nome || '').trim();
+      if (!nome){ showError('nome','Informe seu nome.'); ok=false; } else clearError('nome');
+
+      const email = (state.formData.email || '').trim();
+      if (!isValidEmail(email)){ showError('email','Informe um e-mail válido.'); ok=false; } else clearError('email');
+
+      const telDigits = onlyDigits(state.formData.telefone);
+      if (telDigits.length < 10){ showError('telefone','Informe um WhatsApp válido.'); ok=false; } else clearError('telefone');
+
+      const docDigits = onlyDigits(state.formData.cpfCnpj);
+      if (state.tipoPessoa === 'pf' && docDigits.length !== 11){ showError('cpf-cnpj','CPF inválido (11 dígitos).'); ok=false; }
+      else if (state.tipoPessoa === 'pj' && docDigits.length !== 14){ showError('cpf-cnpj','CNPJ inválido (14 dígitos).'); ok=false; }
+      else clearError('cpf-cnpj');
+
+      const cidade = (state.formData.cidade || '').trim();
+      if (!cidade){ showError('cidade','Informe a cidade.'); ok=false; } else clearError('cidade');
+
+      if (!state.uf){ showError('uf','Selecione o estado.'); ok=false; } else clearError('uf');
+
+      if (!document.getElementById('termos').checked){
+        document.getElementById('error-termos').style.display='block';
+        document.getElementById('error-termos').textContent='Você precisa aceitar os Termos.';
+        ok=false;
+      } else {
+        document.getElementById('error-termos').style.display='none';
+        document.getElementById('error-termos').textContent='';
+      }
+
+      if (!document.getElementById('lgpd').checked){
+        document.getElementById('error-lgpd').style.display='block';
+        document.getElementById('error-lgpd').textContent='Você precisa aceitar a Política de Privacidade.';
+        ok=false;
+      } else {
+        document.getElementById('error-lgpd').style.display='none';
+        document.getElementById('error-lgpd').textContent='';
+      }
+
+      return ok;
+    }
+
+    async function buscarCEP(cep){
+      if (onlyDigits(cep).length !== 8) return;
+
+      document.getElementById('cep-loading').classList.remove('hidden');
+      document.getElementById('cep-loader').classList.remove('hidden');
+      document.getElementById('cep-success').classList.add('hidden');
+
+      try{
+        const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await r.json();
+        if (data.erro){
+          document.getElementById('error-cep').style.display='block';
+          document.getElementById('error-cep').textContent='CEP não encontrado';
+          return;
+        }
+
+        document.getElementById('error-cep').style.display='none';
+        document.getElementById('error-cep').textContent='';
+
+        document.getElementById('endereco').value = data.logradouro || '';
+        document.getElementById('bairro').value = data.bairro || '';
+        document.getElementById('cidade').value = data.localidade || '';
+        document.getElementById('uf').value = (data.uf || 'PB').toUpperCase();
+
+        state.formData.endereco = data.logradouro || '';
+        state.formData.bairro = data.bairro || '';
+        state.formData.cidade = data.localidade || '';
+        state.uf = (data.uf || 'PB').toUpperCase();
+
+        document.getElementById('cep-success').classList.remove('hidden');
+      } catch(e){
+        document.getElementById('error-cep').style.display='block';
+        document.getElementById('error-cep').textContent='Erro ao consultar CEP. Tente novamente.';
+      } finally {
+        document.getElementById('cep-loading').classList.add('hidden');
+        document.getElementById('cep-loader').classList.add('hidden');
+      }
+    }
+
+    function setupEventListeners(){
+      // cards
+      document.getElementById('corretor').addEventListener('click', () => setTipoConta('corretor'));
+      document.getElementById('imobiliaria').addEventListener('click', () => setTipoConta('imobiliaria'));
+
+      // PF/PJ
+      document.getElementById('toggle-pf').addEventListener('click', () => setTipoPessoa('pf'));
+      document.getElementById('toggle-pj').addEventListener('click', () => setTipoPessoa('pj'));
+
+      // pills
+      document.querySelectorAll('[data-range]').forEach(btn => {
+        btn.addEventListener('click', () => setRangeImoveis(btn.dataset.range));
+      });
+
+      // inputs
+      document.getElementById('nome').addEventListener('input', (e)=> state.formData.nome = e.target.value);
+      document.getElementById('email').addEventListener('input', (e)=> state.formData.email = e.target.value);
+
+      document.getElementById('telefone').addEventListener('input', (e)=>{
+        const v = formatPhoneBR(e.target.value);
+        e.target.value = v;
+        state.formData.telefone = v;
+      });
+
+      document.getElementById('cpf-cnpj').addEventListener('input', (e)=>{
+        const v = formatCpfCnpj(e.target.value);
+        e.target.value = v;
+        state.formData.cpfCnpj = v;
+      });
+
+      document.getElementById('creci').addEventListener('input', (e)=> state.formData.creci = e.target.value);
+
+      document.getElementById('cep').addEventListener('input', (e)=>{
+        const v = formatCEP(e.target.value);
+        e.target.value = v;
+        state.formData.cep = v;
+
+        const digits = onlyDigits(v);
+        if (digits.length === 8) buscarCEP(digits);
+      });
+
+      document.getElementById('endereco').addEventListener('input', (e)=> state.formData.endereco = e.target.value);
+      document.getElementById('numero').addEventListener('input', (e)=> state.formData.numero = e.target.value);
+      document.getElementById('bairro').addEventListener('input', (e)=> state.formData.bairro = e.target.value);
+
+      document.getElementById('cidade').addEventListener('input', (e)=> state.formData.cidade = e.target.value);
+      document.getElementById('uf').addEventListener('change', (e)=> state.uf = e.target.value);
+
+      // submit
+      document.getElementById('btn-continuar').addEventListener('click', async ()=>{
+        if (!validateAll()){
+          alert('Por favor, corrija os erros no formulário antes de continuar.');
+          return;
+        }
+
+        const btn = document.getElementById('btn-continuar');
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 loader"></i> Processando...';
+        btn.disabled = true;
+        lucide.createIcons();
+
+        const payload = {
+          plano: state.plano,
+          plano_label: state.planos[state.plano] || 'Profissional',
+          tipo_conta: state.tipoConta,
+          tipo_pessoa: state.tipoPessoa,
+          nome: (state.formData.nome || '').trim(),
+          email: (state.formData.email || '').trim().toLowerCase(),
+          telefone: onlyDigits(state.formData.telefone),
+          cpf_cnpj: onlyDigits(state.formData.cpfCnpj),
+          creci: (state.formData.creci || '').trim(),
+          cep: onlyDigits(state.formData.cep),
+          endereco: (state.formData.endereco || '').trim(),
+          numero: (state.formData.numero || '').trim(),
+          bairro: (state.formData.bairro || '').trim(),
+          cidade: (state.formData.cidade || '').trim(),
+          uf: (state.uf || '').trim(),
+          imoveis_range: state.rangeImoveis,
+          aceite_termos: document.getElementById('termos').checked,
+          aceite_lgpd: document.getElementById('lgpd').checked,
+          created_at: new Date().toISOString()
+        };
+
+        sessionStorage.setItem('imobipro_signup', JSON.stringify(payload));
+
+        // redireciona
+        window.location.href = `/checkout.html?plano=${encodeURIComponent(state.plano)}`;
+        btn.innerHTML = original;
+        btn.disabled = false;
+        lucide.createIcons();
+      });
+    }
+  </script>
+</body>
+</html>

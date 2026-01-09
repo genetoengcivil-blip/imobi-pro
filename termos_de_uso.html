@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso - Imobi Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 25px 0;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .logo-icon {
+            color: #3b82f6;
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .nav-links a.active {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 40px;
+            align-self: flex-start;
+        }
+        
+        .sidebar-nav {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #0f172a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .sidebar-links {
+            list-style: none;
+        }
+        
+        .sidebar-links li {
+            margin-bottom: 12px;
+        }
+        
+        .sidebar-links a {
+            color: #475569;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-links a:hover {
+            background-color: #f1f5f9;
+            color: #1e40af;
+        }
+        
+        .sidebar-links a.active {
+            background-color: #eff6ff;
+            color: #1e40af;
+            font-weight: 600;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .content {
+            flex: 1;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 2.2rem;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+        
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+        
+        .last-updated {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #0f172a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .section-content {
+            color: #475569;
+        }
+        
+        .section-content p {
+            margin-bottom: 15px;
+        }
+        
+        .section-content ul, .section-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
+        .contact-info {
+            background-color: #eff6ff;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+        
+        .contact-title {
+            font-size: 1.3rem;
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #0f172a;
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 25px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <i class="fas fa-building logo-icon"></i>
+                <span>Imobi Pro</span>
+            </a>
+            
+            <nav class="nav-links">                
+                <a href="termos_de_uso.html" class="active">Termos de Uso</a>
+                <a href="politica_de_privacidade.html">Política de Privacidade</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <h3 class="sidebar-title">Navegação</h3>
+                <ul class="sidebar-links">
+                    <li><a href="#aceitacao" class="active">1. Aceitação dos Termos</a></li>
+                    <li><a href="#descricao">2. Descrição do Serviço</a></li>
+                    <li><a href="#cadastro">3. Cadastro e Conta</a></li>
+                    <li><a href="#planos">4. Planos e Pagamentos</a></li>
+                    <li><a href="#uso">5. Uso Aceitável</a></li>
+                    <li><a href="#propriedade">6. Propriedade Intelectual</a></li>
+                    <li><a href="#privacidade">7. Privacidade</a></li>
+                    <li><a href="#limitacao">8. Limitação de Responsabilidade</a></li>
+                    <li><a href="#rescisao">9. Rescisão</a></li>
+                    <li><a href="#alteracoes">10. Alterações nos Termos</a></li>
+                    <li><a href="#jurisdicao">11. Jurisdição</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Content -->
+        <main class="content">
+            <div class="page-header">
+                <h1 class="page-title">Termos de Uso do Imobi Pro</h1>
+                <p class="page-subtitle">Última atualização: 15 de Outubro de 2023</p>
+            </div>
+            
+            <div class="last-updated">
+                <strong>Atenção:</strong> Ao acessar ou usar o Imobi Pro, você concorda com estes Termos de Uso. Se você não concordar com estes termos, não utilize nossos serviços.
+            </div>
+            
+            <section id="aceitacao" class="section">
+                <h2 class="section-title">1. Aceitação dos Termos</h2>
+                <div class="section-content">
+                    <p>Estes Termos de Uso ("Termos") regem o uso do serviço Imobi Pro ("Serviço"), fornecido pela Imobi Solutions Ltda. ("Nós", "Nosso" ou "Imobi Pro"). Ao criar uma conta ou usar nosso Serviço, você ("Usuário", "Você") concorda em cumprir e estar vinculado a estes Termos.</p>
+                    <p>Estes Termos constituem um contrato legal entre você e a Imobi Pro. Recomendamos que você leia cuidadosamente todos os termos antes de usar nosso Serviço.</p>
+                </div>
+            </section>
+            
+            <section id="descricao" class="section">
+                <h2 class="section-title">2. Descrição do Serviço</h2>
+                <div class="section-content">
+                    <p>O Imobi Pro é uma plataforma de CRM (Customer Relationship Management) desenvolvida especificamente para corretores e imobiliárias, oferecendo:</p>
+                    <ul>
+                        <li>Gestão de leads e clientes</li>
+                        <li>Organização de portfólio de imóveis</li>
+                        <li>Ferramentas de automação de vendas</li>
+                        <li>Relatórios e análises de desempenho</li>
+                        <li>Integração com portais imobiliários</li>
+                        <li>Comunicação multi-canal com clientes</li>
+                    </ul>
+                    <p>Nos reservamos o direito de modificar, suspender ou descontinuar qualquer aspecto do Serviço a qualquer momento, com ou sem aviso prévio.</p>
+                </div>
+            </section>
+            
+            <section id="cadastro" class="section">
+                <h2 class="section-title">3. Cadastro e Conta</h2>
+                <div class="section-content">
+                    <p>Para usar o Serviço, você deve criar uma conta fornecendo informações precisas, completas e atualizadas.</p>
+                    
+                    <div class="highlight-box">
+                        <strong>Responsabilidades da Conta:</strong>
+                        <ul>
+                            <li>Você é responsável por manter a confidencialidade de sua senha</li>
+                            <li>Você é responsável por toda atividade que ocorrer em sua conta</li>
+                            <li>Você deve notificar-nos imediatamente sobre qualquer uso não autorizado</li>
+                            <li>Você deve ter pelo menos 18 anos para criar uma conta</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Cada usuário pode manter apenas uma conta gratuita. Contas duplicadas podem ser suspensas sem aviso prévio.</p>
+                </div>
+            </section>
+            
+            <section id="planos" class="section">
+                <h2 class="section-title">4. Planos e Pagamentos</h2>
+                <div class="section-content">
+                    <p>O Imobi Pro oferece diferentes planos de assinatura:</p>
+                    
+                    <h3>4.1 Período de Teste</h3>
+                    <p>Oferecemos um período de teste gratuito de 7 dias para novos usuários. Após este período, será necessário escolher um plano pago para continuar usando o Serviço.</p>
+                    
+                    <h3>4.2 Planos Disponíveis</h3>
+                    <ul>
+                        <li><strong>Básico:</strong> Recursos essenciais para corretores individuais</li>
+                        <li><strong>Profissional:</strong> Funcionalidades avançadas para corretores e pequenas imobiliárias</li>
+                        <li><strong>Enterprise:</strong> Solução completa para grandes imobiliárias</li>
+                    </ul>
+                    
+                    <h3>4.3 Pagamentos</h3>
+                    <p>Os pagamentos são processados mensalmente ou anualmente, conforme selecionado. Não oferecemos reembolsos para períodos parciais de uso.</p>
+                </div>
+            </section>
+            
+            <section id="uso" class="section">
+                <h2 class="section-title">5. Uso Aceitável</h2>
+                <div class="section-content">
+                    <p>Você concorda em usar o Serviço apenas para fins legais e de acordo com estes Termos. Você não pode:</p>
+                    <ul>
+                        <li>Usar o Serviço para atividades ilegais ou fraudulentas</li>
+                        <li>Tentar acessar contas de outros usuários sem autorização</li>
+                        <li>Enviar spam ou conteúdo malicioso através do Serviço</li>
+                        <li>Violar direitos de propriedade intelectual de terceiros</li>
+                        <li>Interferir na operação normal do Serviço</li>
+                        <li>Repassar, revender ou redistribuir qualquer parte do Serviço</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="propriedade" class="section">
+                <h2 class="section-title">6. Propriedade Intelectual</h2>
+                <div class="section-content">
+                    <p>Todos os direitos de propriedade intelectual relacionados ao Serviço, incluindo software, design, logotipos e documentação, são de propriedade exclusiva da Imobi Pro ou de seus licenciadores.</p>
+                    <p>Você mantém todos os direitos sobre os dados que você insere no Serviço. No entanto, ao usar o Serviço, você nos concede uma licença não exclusiva para processar esses dados apenas para fornecer o Serviço.</p>
+                </div>
+            </section>
+            
+            <section id="privacidade" class="section">
+                <h2 class="section-title">7. Privacidade</h2>
+                <div class="section-content">
+                    <p>Nossa <a href="politica_de_privacidade.html" style="color: #3b82f6;">Política de Privacidade</a> descreve como coletamos, usamos e protegemos suas informações pessoais. Ao usar o Serviço, você concorda com nossa coleta e uso de informações conforme descrito na Política de Privacidade.</p>
+                </div>
+            </section>
+            
+            <section id="limitacao" class="section">
+                <h2 class="section-title">8. Limitação de Responsabilidade</h2>
+                <div class="section-content">
+                    <p>O Serviço é fornecido "como está" e "conforme disponível". Não garantimos que o Serviço será ininterrupto, oportuno, seguro ou livre de erros.</p>
+                    <p>Em nenhuma circunstância a Imobi Pro será responsável por quaisquer danos indiretos, incidentais, especiais ou consequenciais resultantes do uso ou incapacidade de usar o Serviço.</p>
+                </div>
+            </section>
+            
+            <section id="rescisao" class="section">
+                <h2 class="section-title">9. Rescisão</h2>
+                <div class="section-content">
+                    <p>Podemos suspender ou encerrar sua conta a qualquer momento, com ou sem aviso prévio, por violação destes Termos.</p>
+                    <p>Você pode cancelar sua conta a qualquer momento através das configurações da conta. O cancelamento resultará na perda imediata do acesso ao Serviço.</p>
+                </div>
+            </section>
+            
+            <section id="alteracoes" class="section">
+                <h2 class="section-title">10. Alterações nos Termos</h2>
+                <div class="section-content">
+                    <p>Podemos modificar estes Termos periodicamente. Notificaremos você sobre mudanças significativas através do e-mail associado à sua conta ou através de um aviso no Serviço.</p>
+                    <p>O uso continuado do Serviço após tais modificações constitui sua aceitação dos Termos revisados.</p>
+                </div>
+            </section>
+            
+            <section id="jurisdicao" class="section">
+                <h2 class="section-title">11. Jurisdição</h2>
+                <div class="section-content">
+                    <p>Estes Termos serão regidos e interpretados de acordo com as leis do Brasil. Qualquer disputa relacionada a estes Termos será submetida à jurisdição exclusiva dos tribunais de São Paulo, SP.</p>
+                </div>
+            </section>
+            
+            <div class="contact-info">
+                <h3 class="contact-title">Contato</h3>
+                <p>Se você tiver dúvidas sobre estes Termos de Uso, entre em contato conosco:</p>
+                <p><strong>E-mail:</strong> legal@imobipro.com</p>
+                <p><strong>Endereço:</strong> Av. Paulista, 1000 - São Paulo, SP - CEP: 01310-100</p>
+                <p><strong>Telefone:</strong> (11) 3000-0000</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="logo">
+                <i class="fas fa-building logo-icon"></i>
+                <span>Imobi Pro</span>
+            </div>
+            
+            <div class="footer-links">                
+                <a href="termos_de_uso.html">Termos de Uso</a>
+                <a href="politica_de_privacidade.html">Política de Privacidade</a>                
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2023 Imobi Pro. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active link in sidebar
+                    document.querySelectorAll('.sidebar-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Update active link based on scroll position
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            let currentSectionId = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                const sectionHeight = section.clientHeight;
+                if(window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSectionId = '#' + section.getAttribute('id');
+                }
+            });
+            
+            if(currentSectionId) {
+                document.querySelectorAll('.sidebar-links a').forEach(link => {
+                    link.classList.remove('active');
+                    if(link.getAttribute('href') === currentSectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

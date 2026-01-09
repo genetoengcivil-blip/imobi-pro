@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImobiPro | CRM Imobiliário para Corretores</title>
+    <meta name="description" content="CRM imobiliário completo para corretores: CRM inteligente + Site profissional. Escolha seu plano, assine e comece agora. Planos Básico e Profissional ganham 7 dias de acesso Premium. Cancele quando quiser.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Incluir i18n e Supabase -->
+    <script src="/shared/config/supabase.js"></script>
+    <script src="/shared/i18n.js"></script>
+    <script src="/env.js"></script>
+    <style>
+        :root {
+            --primary: #1a3a5f;
+            --primary-dark: #0d2842;
+            --primary-light: #2c5282;
+            --secondary: #25D366;
+            --secondary-dark: #128C7E;
+            --accent: #FF6B35;
+            --accent-dark: #e55a2e;
+            --light: #ffffff;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #f8fafc;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* WhatsApp Flutuante */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            z-index: 9999;
+            text-decoration: none;
+            transition: var(--transition);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5);
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 18px 0;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 12px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .cta-nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Botões */
+        .btn {
+            padding: 14px 30px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 6px 20px rgba(26, 58, 95, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(26, 58, 95, 0.35);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.25);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 107, 53, 0.35);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(37, 211, 102, 0.35);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: linear-gradient(45deg, rgba(26, 58, 95, 0.03) 0%, rgba(44, 82, 130, 0.03) 100%);
+            transform: rotate(30deg);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,208C960,192,1056,160,1152,154.7C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 70px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 3.2rem;
+            line-height: 1.15;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .hero-text h1 span {
+            color: var(--secondary);
+            position: relative;
+        }
+
+        .hero-text h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(37, 211, 102, 0.15);
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .hero-highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: var(--dark);
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .highlight-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 500px;
+        }
+
+        .trust-avatars {
+            display: flex;
+        }
+
+        .trust-avatars img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin-left: -12px;
+        }
+
+        .trust-avatars img:first-child {
+            margin-left: 0;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            transform: perspective(1000px) rotateY(-10deg);
+            transition: transform 0.6s ease;
+            border: 8px solid white;
+        }
+
+        .hero-image:hover img {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .floating-badge {
+            position: absolute;
+            bottom: 30px;
+            right: -20px;
+            background: white;
+            padding: 18px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: float 3s ease-in-out infinite;
+            max-width: 250px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .badge-icon.green {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 70px 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: white;
+            line-height: 1;
+        }
+
+        .stat-text {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Features */
+        .features {
+            padding: 100px 0;
+            background: var(--light);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 35px;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 45px 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            color: white;
+            font-size: 28px;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        }
+
+        .feature-card h3 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-video {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-video img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 32px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-button:hover {
+            background: white;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .demo-text h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .demo-text p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .demo-list {
+            list-style: none;
+            margin: 35px 0;
+        }
+
+        .demo-list li {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            font-size: 1.1rem;
+        }
+
+        .demo-list i {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            background: var(--light-gray);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 45px 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 35px;
+            font-size: 90px;
+            color: rgba(26, 58, 95, 0.05);
+            font-family: Georgia, serif;
+            line-height: 1;
+            font-weight: bold;
+        }
+
+        .testimonial-text {
+            font-size: 1.15rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            line-height: 1.7;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .author-info h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 1.15rem;
+        }
+
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .stars {
+            color: #FFD700;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        .rating-summary {
+            text-align: center;
+            margin-top: 60px;
+            padding: 35px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 100px 0;
+            background: var(--light);
+            position: relative;
+        }
+
+        .pricing-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 45px 35px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pricing-card.popular {
+            border: 3px solid var(--secondary);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 25px 0 10px;
+            line-height: 1;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .pricing-period {
+            color: var(--gray);
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 25px 0 35px;
+            flex-grow: 1;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.05rem;
+        }
+
+        .pricing-features li i {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .pricing-features li.disabled {
+            color: #ccc;
+        }
+
+        .pricing-features li.disabled i {
+            color: #ccc;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 90px 0;
+            background: var(--light-gray);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: var(--radius);
+            margin-bottom: 18px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer p {
+            padding: 0 0 25px;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .guarantee-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 30px;
+            margin-top: 40px;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 70px 0 35px;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 45px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 15px;
+        }
+
+        .footer-column ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        .footer-newsletter {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: var(--radius);
+            margin-top: 20px;
+        }
+
+        .footer-newsletter input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .footer-newsletter button {
+            width: 100%;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 35px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 50px 45px;
+            border-radius: var(--radius);
+            max-width: 550px;
+            width: 90%;
+            position: relative;
+            animation: modalSlide 0.4s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--gray);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: #f1f1f1;
+            color: var(--dark);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .modal-header h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .modal-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 58, 95, 0.1);
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 45px;
+        }
+
+        .success-message i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .success-message h3 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .success-message p {
+            color: var(--gray);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .hero-content {
+                gap: 50px;
+            }
+            
+            .floating-badge {
+                right: -10px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-content,
+            .demo-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 50px;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.7rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-btns {
+                justify-content: center;
+            }
+            
+            .floating-badge {
+                position: relative;
+                right: 0;
+                margin: 30px auto 0;
+                max-width: 400px;
+            }
+            
+            .demo-video {
+                order: 1;
+            }
+            
+            .demo-text {
+                order: 2;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 450px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 150px 0 80px;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.15rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title p {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                padding: 35px 25px;
+            }
+            
+            .cta-section h2 {
+                font-size: 2.2rem;
+            }
+            
+            .cta-section p {
+                font-size: 1.1rem;
+            }
+            
+            .modal-content {
+                padding: 35px 25px;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-text h1 {
+                font-size: 1.9rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.05rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .cta-btns {
+                flex-direction: column;
+            }
+            
+            .stats-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .highlight-item {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- WhatsApp -->
+    <a href="https://wa.me/5583986667292?text=Olá! Gostaria de assinar o ImobiPro" 
+       class="whatsapp-float" 
+       target="_blank"
+       title="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Header -->
+    <header id="mainHeader">
+        <div class="container">
+            <div class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-home"></i>
+                    Imobi<span>Pro</span>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#features">Funcionalidades</a></li>
+<li><a href="#pricing">Planos</a></li>
+                    <li><a href="#testimonials">Avaliações</a></li>
+                    <li><a href="#faq">Dúvidas</a></li>
+                </ul>
+                
+                <div class="cta-nav">
+                    <a href="/planos.html" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i> Começar agora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text fade-in">
+                    <h1><span>Feche Mais Negócios</span> com o CRM Imobiliário Mais Completo do Brasil</h1>
+                    <p class="hero-subtitle">Sistema tudo-em-um: CRM inteligente + Site profissional + Gestão de leads. Aumente suas vendas e organize seu negócio em uma única plataforma.</p>
+                    
+                    <div class="hero-highlights">
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span>+47% Conversão de Leads</span>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <span>Economize 15h/semana</span>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <span>100% LGPD</span>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-btns">
+                        <a href="/planos.html" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Começar agora
+                        </a>
+                        <a href="https://wa.me/5583986667292?text=Olá! Gostaria de saber mais sobre o ImobiPro" class="btn btn-secondary" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Falar no WhatsApp
+                        </a>
+                    </div>
+                    <p style="margin-top: 10px; color: var(--gray); font-weight: 600;">
+                        🎁 Assinando os planos <strong>Básico</strong> ou <strong>Profissional</strong>, você ganha <strong>7 dias de acesso Premium</strong>.
+                    </p>
+                    
+                    <div class="trust-badge fade-in">
+                        <div class="trust-avatars">
+                            <div style="width: 42px; height: 42px; border-radius: 50%; background: #4F46E5; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white;">CR</div>
+                            <div style="width: 42px; height: 42px; border-radius: 50%; background: #10B981; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; margin-left: -12px;">AS</div>
+                            <div style="width: 42px; height: 42px; border-radius: 50%; background: #F59E0B; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; margin-left: -12px;">RS</div>
+                        </div>
+                        <div>
+                            <strong>+500 corretores já usam o ImobiPro</strong>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">Avaliação 4.8/5 baseado em 247 reviews</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-image fade-in">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Dashboard ImobiPro">
+                    
+                    <div class="floating-badge">
+                        <div class="badge-icon green">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <strong>+42% Conversão</strong>
+                            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">Taxa de leads para clientes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof (logo abaixo do Hero) -->
+    <section class="social-proof" style="background: var(--light); padding: 45px 0;">
+        <div class="container">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; text-align:center;">
+                <div style="background: var(--light-gray); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--primary); line-height:1;">+1.200</div>
+                    <div style="color: var(--gray); font-weight: 600; margin-top: 6px;">Corretores ativos</div>
+                </div>
+                <div style="background: var(--light-gray); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--primary); line-height:1;">+48.000</div>
+                    <div style="color: var(--gray); font-weight: 600; margin-top: 6px;">Leads organizados</div>
+                </div>
+                <div style="background: var(--light-gray); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--primary); line-height:1;">Suporte humano</div>
+                    <div style="color: var(--gray); font-weight: 600; margin-top: 6px;">Atendimento via WhatsApp</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-content">
+                <div class="stat-item fade-in">
+                    <div class="stat-number">+850</div>
+                    <div class="stat-text">Corretores Atendidos</div>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-number">R$ 4,2bi</div>
+                    <div class="stat-text">Em Negócios Gerados</div>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-number">+47%</div>
+                    <div class="stat-text">Aumento na Conversão</div>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-number">4.8/5</div>
+                    <div class="stat-text">Satisfação dos Clientes</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Transforme Sua Rotina com Ferramentas Poderosas</h2>
+                <p>Tudo que você precisa para gerenciar imóveis, conquistar clientes e fechar mais negócios</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Gestão de Imóveis Inteligente</h3>
+                    <p>Cadastro completo com fotos, vídeos, tour virtual e status em tempo real. Organize seu portfólio com etiquetas inteligentes.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>CRM Automatizado</h3>
+                    <p>Controle total de leads com funil de vendas, follow-up automático, segmentação e histórico completo de interações.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Site Imobiliário Premium</h3>
+                    <p>Site responsivo com seu domínio, otimizado para SEO, formulários inteligentes e integração total com seu CRM.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Relatórios e Insights</h3>
+                    <p>Dashboard com métricas de performance, ROI, taxa de conversão e relatórios personalizados para tomada de decisão.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>App Mobile Completo</h3>
+                    <p>Acesse seu CRM de qualquer lugar. Receba notificações em tempo real, gerencie imóveis e clientes pelo celular.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Segurança Total LGPD</h3>
+                    <p>Seus dados protegidos com criptografia de ponta a ponta, backups automáticos e total conformidade com a LGPD.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMONSTRAÇÃO EM VÍDEO -->
+    <section id="video" class="demo">
+    <div class="container">
+        <div class="demo-content">
+
+        <div class="demo-video fade-in">
+            <img
+            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+            alt="CRM ImobiPro em funcionamento">
+            <div class="play-button" onclick="openVideoModal()">
+            <i class="fas fa-play"></i>
+            </div>
+        </div>
+
+        <div class="demo-text fade-in">
+            <h2>Veja o CRM funcionando na prática</h2>
+            <p>
+            Em poucos minutos, entenda como você organiza leads,
+            acompanha negociações e ganha produtividade no dia a dia,
+            antes de escolher seu plano.
+            </p>
+
+            <ul class="demo-list">
+            <li><i class="fas fa-check"></i> Funil de vendas em tempo real</li>
+            <li><i class="fas fa-check"></i> Gestão de leads e imóveis</li>
+            <li><i class="fas fa-check"></i> Dashboard e relatórios</li>
+            <li><i class="fas fa-check"></i> Integração site + CRM</li>
+            </ul>
+
+            <a href="/planos.html" class="btn btn-primary">
+            Começar agora
+            </a>
+        </div>
+
+        </div>
+    </div>
+    </section>
+
+
+    <!-- CTA (após Funcionalidades) -->
+    <section class="cta-section" style="padding: 90px 0;">
+        <div class="container">
+            <div class="cta-content fade-in">
+                <h2>Pronto para organizar seus leads e vender mais?</h2>
+                <p>Escolha seu plano, conclua a assinatura e comece agora. Sem fidelidade: cancele quando quiser.</p>
+                <div class="cta-btns">
+                    <a href="/planos.html" class="btn btn-success" style="font-size: 1.1rem; padding: 16px 35px;">
+                        <i class="fas fa-rocket"></i> Começar agora
+                    </a>
+                    <a href="https://wa.me/5583986667292?text=Olá! Tenho dúvidas sobre o ImobiPro" class="btn btn-secondary" target="_blank" style="font-size: 1.1rem; padding: 16px 35px;">
+                        <i class="fab fa-whatsapp"></i> Tirar dúvidas no WhatsApp
+                    </a>
+                </div>
+                <div class="guarantee-badge fade-in">
+                    <i class="fas fa-gift"></i>
+                    <span>Bônus: 7 dias de acesso Premium nos planos Básico e Profissional</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+<!-- Testimonials -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Histórias de Sucesso de Quem Já Usa</h2>
+                <p>Corretores e imobiliárias que transformaram seus resultados com o ImobiPro</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-text">
+                        "Em 6 meses usando o ImobiPro, fechei R$ 3,2 milhões em vendas. O sistema me ajudou a organizar meus leads e nunca perder um follow-up. O site integrado gera 15-20 leads qualificados por mês!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">CR</div>
+                        <div class="author-info">
+                            <h4>Carlos Rodrigues</h4>
+                            <p>Corretor Sênior - São Paulo/SP</p>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-text">
+                        "Como proprietária de imobiliária, o ImobiPro resolveu todos meus problemas de gestão. Antes perdíamos leads, hoje convertemos 35% mais. A equipe de suporte é excelente e o sistema é super intuitivo."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AS</div>
+                        <div class="author-info">
+                            <h4>Ana Silva</h4>
+                            <p>Proprietária - Imobiliária Luxo</p>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-text">
+                        "O investimento no ImobiPro foi o melhor que fiz na carreira. Economizo 20 horas por semana em processos manuais e consigo focar no que importa: fechar negócios. Recomendo para todo corretor!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RS</div>
+                        <div class="author-info">
+                            <h4>Roberto Santos</h4>
+                            <p>Corretor Especialista - Rio de Janeiro/RJ</p>
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rating-summary fade-in">
+                <div style="font-size: 3.5rem; font-weight: 800; color: var(--primary); line-height: 1;">4.8</div>
+                <div style="color: #FFD700; font-size: 1.5rem; margin: 10px 0;">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <div style="color: var(--gray); font-size: 1rem;">Baseado em 247 avaliações verificadas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA (após Avaliações) -->
+    <section class="cta-section" style="padding: 90px 0;">
+        <div class="container">
+            <div class="cta-content fade-in">
+                <h2>Pronto para começar hoje?</h2>
+                <p>Assine o plano ideal para você e tenha controle total do funil de vendas. Cancele quando quiser.</p>
+                <div class="cta-btns">
+                    <a href="/planos.html" class="btn btn-success" style="font-size: 1.1rem; padding: 16px 35px;">
+                        <i class="fas fa-rocket"></i> Começar agora
+                    </a>
+                    <a href="https://wa.me/5583986667292?text=Olá! Quero falar sobre o ImobiPro" class="btn btn-secondary" target="_blank" style="font-size: 1.1rem; padding: 16px 35px;">
+                        <i class="fab fa-whatsapp"></i> Falar no WhatsApp
+                    </a>
+                </div>
+                <div class="guarantee-badge fade-in">
+                    <i class="fas fa-gift"></i>
+                    <span>Bônus: 7 dias de acesso Premium nos planos Básico e Profissional</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="pricing-header fade-in">
+                <div class="pricing-badge"><i class="fas fa-bolt"></i> Comece agora</div>
+                <h2>Escolha o Plano Ideal Para Você</h2>
+                <p>Invista menos de 1% do valor de uma venda e tenha todas as ferramentas para multiplicar seus resultados</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card fade-in">
+                    <h3>Básico</h3>
+                    <p>Para corretores independentes que estão começando</p>
+                    <p style="margin-top:10px; color: var(--secondary-dark); font-weight:700;"><i class="fas fa-gift"></i> +7 dias de acesso Premium</p>
+                    <div class="price">R$ 97<span>/mês</span></div>
+                    <div class="pricing-period">Cobrança mensal • Cancele quando quiser</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Até 50 imóveis ativos</li>
+                        <li><i class="fas fa-check"></i> CRM de clientes básico</li>
+                        <li><i class="fas fa-check"></i> Site imobiliário responsivo</li>
+                        <li><i class="fas fa-check"></i> 1 usuário</li>
+                        <li><i class="fas fa-check"></i> Suporte por e-mail</li>
+                        <li class="disabled"><i class="fas fa-times"></i> Relatórios avançados</li>
+                        <li class="disabled"><i class="fas fa-times"></i> App mobile</li>
+                    </ul>
+                    <a href="/planos.html" onclick="localStorage.setItem('selectedPlan', 'basico')" class="btn btn-secondary">Assinar Básico</a>
+                </div>
+                
+                <div class="pricing-card popular fade-in">
+                    <div class="popular-badge">MAIS POPULAR</div>
+                    <h3>Profissional</h3>
+                    <p>Para corretores que querem crescer rapidamente</p>
+                    <p style="margin-top:10px; color: var(--secondary-dark); font-weight:700;"><i class="fas fa-gift"></i> +7 dias de acesso Premium</p>
+                    <div class="price">R$ 197<span>/mês</span></div>
+                    <div class="pricing-period">Cobrança mensal • Cancele quando quiser</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Até 200 imóveis ativos</li>
+                        <li><i class="fas fa-check"></i> CRM avançado com automação</li>
+                        <li><i class="fas fa-check"></i> Site personalizado com SEO</li>
+                        <li><i class="fas fa-check"></i> Até 3 usuários</li>
+                        <li><i class="fas fa-check"></i> Suporte prioritário</li>
+                        <li><i class="fas fa-check"></i> Relatórios e dashboard</li>
+                        <li><i class="fas fa-check"></i> App mobile completo</li>
+                    </ul>
+                    <a href="/planos.html" onclick="localStorage.setItem('selectedPlan', 'profissional')" class="btn btn-primary">Assinar Profissional</a>
+                </div>
+                
+                <div class="pricing-card fade-in">
+                    <h3>Premium</h3>
+                    <p>Para quem quer o máximo desde o primeiro dia</p>
+                    <div class="price">R$ 397<span>/mês</span></div>
+                    <div class="pricing-period">Cobrança mensal • Cancele quando quiser</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Imóveis ilimitados</li>
+                        <li><i class="fas fa-check"></i> CRM completo com funil</li>
+                        <li><i class="fas fa-check"></i> Multi-sites e domínios</li>
+                        <li><i class="fas fa-check"></i> Usuários ilimitados</li>
+                        <li><i class="fas fa-check"></i> Suporte 24/7 dedicado</li>
+                        <li><i class="fas fa-check"></i> API e integrações</li>
+                        <li><i class="fas fa-check"></i> Treinamento personalizado</li>
+                    </ul>
+                    <a href="/planos.html" onclick="localStorage.setItem('selectedPlan', 'premium')" class="btn btn-secondary">Assinar Premium</a>
+                </div>
+            </div>
+            
+            </div>
+    </section>
+
+    
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Perguntas Frequentes</h2>
+                <p>Tire suas dúvidas sobre o ImobiPro</p>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Posso testar o sistema antes de pagar?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Não. A assinatura é realizada no momento da contratação do plano. Como benefício, ao assinar os planos <strong>Básico</strong> ou <strong>Profissional</strong>, você recebe <strong>7 dias de acesso Premium</strong>. Após esse período, sua conta retorna automaticamente ao plano contratado, com opção de upgrade a qualquer momento.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>O site é realmente incluído no plano?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sim! Todos os planos incluem um site imobiliário profissional, responsivo e otimizado para SEO. Você pode personalizar com suas cores, logo e domínio próprio. O site é automaticamente sincronizado com seu CRM.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Como funciona a migração dos meus dados?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nossa equipe oferece suporte gratuito na migração dos seus dados. Podemos importar seus imóveis, clientes e leads de planilhas Excel, outros sistemas ou mesmo de forma manual. O processo é rápido e seguro.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>O sistema é compatível com a LGPD?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sim! O ImobiPro é 100% compatível com a LGPD. Todos os dados são criptografados, temos política de privacidade clara e fornecemos ferramentas para gerenciar consentimentos dos seus clientes.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Posso cancelar a qualquer momento?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sim! Não há fidelidade ou multa por cancelamento. Você pode cancelar seu plano a qualquer momento pelo painel do cliente. Seus dados permanecem disponíveis para download por 30 dias após o cancelamento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content fade-in">
+                <h2>Comece a Fechar Mais Negócios Hoje</h2>
+                <p>Junte-se a mais de 850 corretores que já transformaram seus negócios com o CRM imobiliário mais completo do mercado.</p>
+                
+                <div class="cta-btns">
+                    <a href="/planos.html" class="btn btn-success" style="font-size: 1.1rem; padding: 16px 35px;">
+                        <i class="fas fa-rocket"></i> Começar agora
+                    </a>
+                    <a href="https://wa.me/5583986667292?text=Olá! Gostaria de assinar o ImobiPro" class="btn btn-secondary" target="_blank" style="font-size: 1.1rem; padding: 16px 35px;">
+                        <i class="fab fa-whatsapp"></i> Falar com Consultor
+                    </a>
+                </div>
+                <div class="guarantee-badge fade-in">
+                    <i class="fas fa-gift"></i>
+                    <span>Bônus: 7 dias de acesso Premium nos planos Básico e Profissional</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <a href="#" class="logo" style="color: white; margin-bottom: 20px; display: inline-block;">
+                        <i class="fas fa-home"></i>
+                        Imobi<span style="color: var(--secondary);">Pro</span>
+                    </a>
+                    <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.7; margin-bottom: 20px;">
+                        O CRM imobiliário completo que integra gestão de imóveis, CRM inteligente e site profissional para corretores que querem vender mais.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Produto</h3>
+                    <ul>
+                        <li><a href="#features"><i class="fas fa-chevron-right"></i> Funcionalidades</a></li>
+                        <li><a href="#pricing"><i class="fas fa-chevron-right"></i> Planos</a></li>
+                        <li><a href="/login"><i class="fas fa-chevron-right"></i> Área do Cliente</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Empresa</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Sobre nós</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contato</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Imprensa</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Suporte</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Central de Ajuda</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Documentação</a></li>
+                        <li><a href="https://wa.me/5583986667292"><i class="fas fa-chevron-right"></i> WhatsApp</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Status do Sistema</a></li>
+                    </ul>
+                    
+                    <div class="footer-newsletter">
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 1rem;">Receba Dicas Gratuitas</h4>
+                        <input type="email" placeholder="Seu melhor e-mail" id="newsletterEmail">
+                        <button class="btn btn-success" onclick="subscribeNewsletter()">
+                            <i class="fas fa-paper-plane"></i> Inscrever
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 ImobiPro. Todos os direitos reservados.</p>
+                <p style="margin-top: 10px; font-size: 0.9rem;">
+                    <a href="/docs/termos-de-uso.md" style="color: rgba(255, 255, 255, 0.6); margin: 0 10px;">Termos de Uso</a> | 
+                    <a href="/docs/politica-de-privacidade-lgpd.md" style="color: rgba(255, 255, 255, 0.6); margin: 0 10px;">Política de Privacidade</a> | 
+                    <a href="#" style="color: rgba(255, 255, 255, 0.6); margin: 0 10px;">LGPD</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- VIDEO MODAL -->
+    <div id="videoModal" class="modal">
+    <div class="modal-content" style="max-width: 900px; padding: 0; background: transparent;">
+        <button class="close-modal" onclick="closeVideoModal()" style="color:white;">&times;</button>
+
+        <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+        <iframe
+            id="demoVideo"
+            src="https://www.youtube.com/embed/Hc8gYoXkLZ4?rel=0"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;">
+        </iframe>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const whatsappNumber = "5583986667292";
+        const whatsappMessage = "Olá! Gostaria de assinar o ImobiPro.";
+
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('mainHeader');
+            if (header) {
+                if (window.scrollY > 50) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+            }
+
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 100) element.classList.add('visible');
+            });
+        });
+
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+
+            if (faqItem.classList.contains('active')) {
+                answer.style.maxHeight = null;
+                faqItem.classList.remove('active');
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+                faqItem.classList.add('active');
+            }
+        }
+
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail')?.value || '';
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email && emailRegex.test(email)) {
+                alert('Obrigado por se inscrever! Enviaremos dicas valiosas em breve.');
+                document.getElementById('newsletterEmail').value = '';
+
+                // Salvar no localStorage
+                let subscribers = JSON.parse(localStorage.getItem('imobipro_newsletter') || '[]');
+                subscribers.push({email, date: new Date().toISOString()});
+                localStorage.setItem('imobipro_newsletter', JSON.stringify(subscribers));
+
+                // Opcional: Enviar para API
+                fetch('/api/subscribe-newsletter', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ email: email })
+                }).catch(console.error);
+            } else {
+                alert('Por favor, insira um e-mail válido.');
+            }
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (!targetId || targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    window.scrollTo({ top: targetElement.offsetTop - 90, behavior: 'smooth' });
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappLink = document.querySelector('.whatsapp-float');
+            if (whatsappLink) {
+                whatsappLink.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+            }
+            
+            // Atualizar todos os links do WhatsApp
+            document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
+                const currentHref = link.getAttribute('href');
+                if (currentHref.includes('5511999999999')) {
+                    link.href = currentHref.replace('5511999999999', whatsappNumber);
+                }
+            });
+            
+            window.dispatchEvent(new Event('scroll'));
+        });
+
+        // Funções do Modal de Vídeo
+        function openVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('demoVideo');
+
+            if (!modal || !iframe) {
+                console.error('Modal ou iframe do vídeo não encontrado');
+                return;
+            }
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // Forçar autoplay
+            if (!iframe.src.includes('autoplay=1')) {
+                iframe.src += (iframe.src.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('demoVideo');
+
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+
+            // Remover autoplay para parar o vídeo
+            iframe.src = iframe.src.replace('&autoplay=1', '').replace('?autoplay=1', '');
+        }
+
+        // Salvar lead quando clicar em "Começar agora"
+        function saveLead(action = 'cta_click') {
+            const leadData = {
+                action: action,
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                referrer: document.referrer
+            };
+            
+            // Salvar no localStorage
+            let leads = JSON.parse(localStorage.getItem('imobipro_leads') || '[]');
+            leads.push(leadData);
+            localStorage.setItem('imobipro_leads', JSON.stringify(leads.slice(-50))); // Manter apenas últimos 50
+            
+            // Enviar para API (opcional)
+            fetch('/api/save-lead', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(leadData)
+            }).catch(console.error);
+        }
+
+        // Adicionar evento aos botões CTA
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-success, .btn-primary').forEach(btn => {
+                if (btn.href && btn.href.includes('/planos')) {
+                    btn.addEventListener('click', function() {
+                        saveLead('planos_click');
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- Incluir Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>
+
+

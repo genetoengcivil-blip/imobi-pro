@@ -1,0 +1,17 @@
+{
+  "name": "imobipro",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node api/_server-local.js",
+    "start": "node api/_server-local.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "mercadopago": "^2.0.15",
+    "resend": "^4.0.0",
+    "slugify": "^1.6.6",
+    "zod": "^3.23.8"
+  }
+}

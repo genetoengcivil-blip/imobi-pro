@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Planos • ImobiPro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; }
+
+    /* ===== STEPPER PREMIUM IMOBIPRO ===== */
+    .step-circle{
+      width:42px;height:42px;border-radius:9999px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:15px;transition:all .3s ease;
+    }
+    .step-completed{
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.35);
+    }
+    .step-active{
+      background:#fff;color:#2563eb;border:2px solid #2563eb;
+      box-shadow:0 0 0 6px rgba(37,99,235,.08),0 10px 25px rgba(37,99,235,.25);
+    }
+    .step-inactive{
+      background:#f1f5f9;color:#64748b;border:2px solid #e2e8f0;
+    }
+    .step-text{
+      margin-top:10px;font-size:13px;font-weight:600;
+      color:#64748b;white-space:nowrap;
+    }
+    .step-text-active{color:#2563eb}
+    .step-bar{
+      width:90px;height:4px;background:#e5e7eb;
+      margin:0 12px;border-radius:9999px;
+    }
+    .step-bar-completed{
+      background:linear-gradient(90deg,#2563eb,#1e40af);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-white">
+
+<!-- ================= HEADER / STEPPER ================= -->
+<header class="bg-white border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-6 py-8">
+
+    <!-- LOGO -->
+    <div class="flex justify-center mb-6">
+      <a href="index.html" class="flex items-center gap-3 text-2xl font-extrabold text-slate-900">
+        <i class="fas fa-home text-green-500"></i>
+        Imobi<span class="text-blue-600">Pro</span>
+      </a>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="flex items-center justify-center">
+
+      <!-- STEP 1 (ATIVO) -->
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-active">1</div>
+        <span class="step-text step-text-active">Escolha o Plano</span>
+      </div>
+
+      <div class="step-bar"></div>
+
+      <!-- STEP 2 -->
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-inactive">2</div>
+        <span class="step-text">Cadastro</span>
+      </div>
+
+      <div class="step-bar"></div>
+
+      <!-- STEP 3 -->
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-inactive">3</div>
+        <span class="step-text">Pagamento</span>
+      </div>
+
+      <div class="step-bar"></div>
+
+      <!-- STEP 4 -->
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-inactive">4</div>
+        <span class="step-text">Acesso ao CRM</span>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 text-white pt-28 pb-40">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <span class="inline-block mb-6 px-5 py-1.5 rounded-full bg-white/10 text-sm font-semibold">
+      CRM profissional para corretores imobiliários
+    </span>
+
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
+      Organize seus imóveis, clientes e vendas
+      <span class="text-blue-300"> em um só lugar</span>
+    </h1>
+
+    <p class="text-blue-100 text-lg">
+      Teste todas as funções Premium por <strong>7 dias grátis</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- ================= PLANOS ================= -->
+<section class="container mx-auto px-6 -mt-24 pb-24 relative z-10">
+
+  <div id="plansGrid" class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto mb-24"></div>
+
+  <!-- CTA -->
+  <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-12">
+    <h2 class="text-2xl font-bold text-center mb-10">
+      Plano selecionado:
+      <span id="selectedPlanName" class="text-blue-600">Profissional</span>
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+      <div class="flex items-center gap-3">
+        <i data-lucide="credit-card" class="text-blue-600"></i> Pagamento seguro
+      </div>
+      <div class="flex items-center gap-3">
+        <i data-lucide="shield-check" class="text-green-600"></i> Sem fidelidade
+      </div>
+      <div class="flex items-center gap-3">
+        <i data-lucide="zap" class="text-amber-500"></i> Ativação imediata
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center">
+      <p class="text-3xl font-extrabold">
+        R$ <span id="selectedPlanPrice">197</span> / mês
+      </p>
+
+      <button id="continueBtn"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-14 py-4 rounded-xl font-bold flex items-center gap-3 shadow-lg">
+        Continuar
+        <i data-lucide="chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+lucide.createIcons();
+
+/* ===== PLANOS ===== */
+const plans = [
+  { id:'basic', name:'Básico', subtitle:'Para quem está começando', price:97, after:'Básico',
+    features:['Até 50 imóveis','1 usuário','Gestão de clientes','Dashboard básico','Site simples','Suporte por e-mail','7 dias GRÁTIS de Premium']},
+  { id:'pro', name:'Profissional', subtitle:'Melhor custo-benefício', price:197, highlight:true, after:'Profissional',
+    features:['Até 200 imóveis','Até 3 usuários','Funil de vendas','Automações','Relatórios','Site completo','7 dias GRÁTIS de Premium']},
+  { id:'premium', name:'Premium', subtitle:'Para quem quer escalar', price:297, after:'Premium',
+    features:['Imóveis ilimitados','Até 10 usuários','Automações completas','API','Multi-sites','Suporte 24/7']}
+];
+
+let selectedPlan = sessionStorage.getItem('plano_id') || 'pro';
+
+function renderPlans(){
+  plansGrid.innerHTML='';
+  plans.forEach(p=>{
+    const active = p.id === selectedPlan;
+    const card = document.createElement('div');
+    card.className = `
+      relative rounded-3xl p-10 cursor-pointer transition-all bg-white
+      ${active ? 'border-2 border-blue-600 scale-[1.04] shadow-[0_25px_50px_rgba(37,99,235,.35)]'
+               : 'border border-slate-200 hover:shadow-xl'}
+    `;
+    card.onclick = ()=>selectPlan(p.id);
+
+    card.innerHTML = `
+      ${p.highlight ? `<span class="absolute -top-4 left-1/2 -translate-x-1/2
+        bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold">Mais escolhido</span>` : ''}
+
+      <h3 class="text-2xl font-bold mb-1">${p.name}</h3>
+      <p class="text-slate-500 mb-6">${p.subtitle}</p>
+
+      <p class="text-4xl font-extrabold mb-8">
+        R$ ${p.price} <span class="text-base font-normal">/ mês</span>
+      </p>
+
+      <ul class="space-y-4">
+        ${p.features.map(f=>`
+          <li class="flex gap-3">
+            <i data-lucide="check" class="text-green-500"></i>${f}
+          </li>`).join('')}
+      </ul>
+
+      <p class="text-sm text-slate-500 mt-6">
+        Após o trial: <strong>${p.after}</strong>
+      </p>
+    `;
+    plansGrid.appendChild(card);
+  });
+
+  const plan = plans.find(p=>p.id===selectedPlan);
+  selectedPlanName.textContent = plan.name;
+  selectedPlanPrice.textContent = plan.price;
+  lucide.createIcons();
+}
+
+function selectPlan(id){
+  selectedPlan = id;
+  renderPlans();
+}
+
+continueBtn.onclick = ()=>{
+  const p = plans.find(p=>p.id===selectedPlan);
+  sessionStorage.setItem('plano_id', p.id);
+  sessionStorage.setItem('plano_nome', p.name);
+  sessionStorage.setItem('plano_valor', p.price);
+  location.href = 'cadastro.html';
+};
+
+renderPlans();
+</script>
+
+</body>
+</html>

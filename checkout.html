@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagamento • ImobiPro</title>
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+.input{
+  width:100%;
+  border:2px solid #e5e7eb;
+  border-radius:14px;
+  padding:16px;
+  font-size:16px;
+  font-weight:600;
+}
+.input:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+.card{
+  aspect-ratio:16/10;
+  border-radius:22px;
+  padding:26px;
+  background:linear-gradient(135deg,#2563eb,#1e40af);
+  color:#fff;
+  box-shadow:0 30px 60px rgba(37,99,235,.45);
+}
+.card-number{letter-spacing:3px;font-size:22px}
+.loader{
+  border:3px solid #fff;
+  border-top:3px solid transparent;
+  border-radius:50%;
+  width:20px;height:20px;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== STEPPER PREMIUM ===== */
+.step-circle{
+  width:42px;height:42px;border-radius:9999px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;
+}
+.step-completed{
+  background:linear-gradient(135deg,#2563eb,#1e40af);
+  color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.35);
+}
+.step-active{
+  background:#fff;color:#2563eb;border:2px solid #2563eb;
+  box-shadow:0 0 0 6px rgba(37,99,235,.08),0 10px 25px rgba(37,99,235,.25);
+}
+.step-inactive{
+  background:#f1f5f9;color:#64748b;border:2px solid #e2e8f0;
+}
+.step-text{
+  margin-top:10px;font-size:13px;font-weight:600;
+  color:#64748b;white-space:nowrap;
+}
+.step-text-active{color:#2563eb}
+.step-bar{
+  width:90px;height:4px;background:#e5e7eb;
+  margin:0 12px;border-radius:9999px;
+}
+.step-bar-completed{
+  background:linear-gradient(90deg,#2563eb,#1e40af);
+}
+</style>
+</head>
+
+<body class="bg-slate-50">
+
+<!-- ================= HEADER / STEPPER ================= -->
+<header class="bg-white border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-6 py-8">
+
+    <div class="flex justify-center mb-6">
+      <a href="index.html" class="flex items-center gap-3 text-2xl font-extrabold text-slate-900">
+        <i class="fas fa-home text-green-500"></i>
+        Imobi<span class="text-blue-600">Pro</span>
+      </a>
+    </div>
+
+    <div class="flex items-center justify-center">
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-completed">1</div>
+        <span class="step-text">Escolha o Plano</span>
+      </div>
+
+      <div class="step-bar step-bar-completed"></div>
+
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-completed">2</div>
+        <span class="step-text">Cadastro</span>
+      </div>
+
+      <div class="step-bar step-bar-completed"></div>
+
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-active">3</div>
+        <span class="step-text step-text-active">Pagamento</span>
+      </div>
+
+      <div class="step-bar"></div>
+
+      <div class="flex flex-col items-center">
+        <div class="step-circle step-inactive">4</div>
+        <span class="step-text">Acesso ao CRM</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-b from-blue-600 to-blue-800 text-white py-16 text-center">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="flex justify-center items-center gap-2 text-sm mb-4">
+      <i data-lucide="shield-check"></i>
+      Ambiente seguro • Criptografia • PCI DSS
+    </div>
+    <h1 class="text-4xl font-extrabold mb-6">Finalize seu pagamento</h1>
+    <p class="text-blue-100 text-lg">
+      Seus dados estão protegidos e sua assinatura será ativada imediatamente.
+    </p>
+  </div>
+</section>
+
+<!-- ================= CONTEÚDO ================= -->
+<section class="-mt-24 px-6 pb-24">
+<div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl p-12 grid md:grid-cols-2 gap-12">
+
+<!-- ===== COLUNA ESQUERDA ===== -->
+<div>
+  <h2 class="text-2xl font-extrabold mb-6">Resumo do cadastro</h2>
+
+  <div class="space-y-2 text-slate-700">
+    <p><strong>Cliente:</strong> <span id="resumoNome"></span></p>
+    <p><strong>E-mail:</strong> <span id="resumoEmail"></span></p>
+    <p><strong>Plano:</strong> <span id="resumoPlano"></span></p>
+    <p><strong>Valor:</strong> R$ <span id="resumoValor"></span> / mês</p>
+  </div>
+
+  <div class="mt-6 border rounded-xl p-5 bg-slate-50">
+    <h3 class="font-bold flex items-center gap-2 mb-2">
+      <i data-lucide="lock"></i> Segurança total
+    </h3>
+    <ul class="text-sm text-slate-700 space-y-1">
+      <li>• Processado pelo Mercado Pago</li>
+      <li>• Cartão não armazenado</li>
+      <li>• Compatível com LGPD</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== COLUNA DIREITA ===== -->
+<div>
+
+<!-- CARTÃO VISUAL -->
+<div class="card mb-8">
+  <div class="flex justify-between items-center mb-6">
+    <span class="font-bold tracking-widest">IMOBIPRO</span>
+    <img id="cardBrand" class="h-8">
+  </div>
+  <div id="cardNumber" class="card-number mb-6">•••• •••• •••• ••••</div>
+  <div class="flex justify-between text-sm">
+    <div>
+      <div class="opacity-75">Titular</div>
+      <div id="cardHolder">NOME DO TITULAR</div>
+    </div>
+    <div>
+      <div class="opacity-75">Validade</div>
+      <div id="cardExpiry">MM/AA</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM MP -->
+<form id="paymentForm" class="space-y-4">
+  <input id="cardNumberInput" class="input" placeholder="Número do cartão">
+  <input id="cardHolderInput" class="input" placeholder="Nome impresso no cartão">
+  <div class="grid grid-cols-2 gap-4">
+    <input id="cardExpirationInput" class="input" placeholder="MM/AA">
+    <input id="securityCodeInput" class="input" placeholder="CVC">
+  </div>
+
+  <button id="payButton" type="submit"
+    class="w-full mt-6 bg-blue-600 text-white font-extrabold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-blue-700">
+    <i data-lucide="lock"></i>
+    Finalizar pagamento seguro
+  </button>
+
+  <p id="paymentStatus" class="text-center text-sm mt-4 hidden"></p>
+</form>
+
+</div>
+</div>
+</section>
+
+<script>
+lucide.createIcons();
+
+/* ===== RESUMO ===== */
+const signupRaw = JSON.parse(sessionStorage.getItem('imobipro_signup') || '{}');
+
+resumoNome.textContent = signupRaw.nome || '-';
+resumoEmail.textContent = signupRaw.email || '-';
+resumoPlano.textContent = signupRaw.plano_label || '-';
+resumoValor.textContent = signupRaw.plano === 'basic' ? 97 :
+                          signupRaw.plano === 'premium' ? 297 : 197;
+
+/* ===== MERCADO PAGO ===== */
+const mp = new MercadoPago('TEST-c599d5c7-7371-49f9-9942-9691ddf58201',{locale:'pt-BR'});
+
+let paymentMethodId = null;
+
+const brandMap={
+  visa:'https://img.icons8.com/color/48/visa.png',
+  master:'https://img.icons8.com/color/48/mastercard.png',
+  amex:'https://img.icons8.com/color/48/amex.png',
+  elo:'https://img.icons8.com/color/48/elo.png'
+};
+
+cardNumberInput.addEventListener('input',async e=>{
+  const v=e.target.value.replace(/\D/g,'');
+  cardNumber.textContent=v.replace(/(.{4})/g,'$1 ').trim();
+
+  if(v.length>=6){
+    const r=await mp.getPaymentMethods({bin:v.slice(0,6)});
+    const b=r.results[0]?.id;
+    if(b){
+      paymentMethodId = b;
+      if(brandMap[b]) cardBrand.src=brandMap[b];
+    }
+  }
+});
+
+cardHolderInput.addEventListener('input',e=>{
+  cardHolder.textContent=e.target.value.toUpperCase();
+});
+
+cardExpirationInput.addEventListener('input',e=>{
+  let v=e.target.value.replace(/\D/g,'').slice(0,4);
+  if(v.length>=3) v=v.slice(0,2)+'/'+v.slice(2);
+  e.target.value=v;
+  cardExpiry.textContent=v;
+});
+
+/* ===== SUBMIT REAL (BACKEND) ===== */
+paymentForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+
+  const statusEl = document.getElementById('paymentStatus');
+  statusEl.classList.add('hidden');
+
+  payButton.innerHTML='<div class="loader"></div> Processando...';
+  payButton.disabled=true;
+
+  const {token,error} = await mp.createCardToken({
+    cardNumber:cardNumberInput.value.replace(/\s/g,''),
+    cardholderName:cardHolderInput.value,
+    cardExpirationMonth:cardExpirationInput.value.split('/')[0],
+    cardExpirationYear:'20'+cardExpirationInput.value.split('/')[1],
+    securityCode:securityCodeInput.value
+  });
+
+  if(error){
+    alert('Erro ao validar cartão');
+    payButton.disabled=false;
+    payButton.innerHTML='Finalizar pagamento seguro';
+    return;
+  }
+
+  const payload = {
+    token: token.id,
+    payment_method_id: paymentMethodId,
+    installments: 1,
+    plano: signupRaw.plano || 'pro',
+    amount: resumoValor.textContent ? Number(resumoValor.textContent) : 197,
+    payer: {
+      email: signupRaw.email,
+      nome: signupRaw.nome
+    },
+    signup: signupRaw
+  };
+
+  try{
+    const res = await fetch('/api/payments/create', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if(!data.ok){
+      throw new Error(data.error || 'Falha no pagamento');
+    }
+
+    statusEl.classList.remove('hidden');
+    if(data.status === 'approved'){
+      statusEl.textContent = 'Pagamento aprovado! Estamos configurando sua conta…';
+      statusEl.className = 'text-center text-sm mt-4 text-green-600';
+    } else if(data.status === 'pending'){
+      statusEl.textContent = 'Pagamento em análise. Você receberá um e-mail assim que for aprovado.';
+      statusEl.className = 'text-center text-sm mt-4 text-amber-600';
+    } else {
+      statusEl.textContent = 'Pagamento não aprovado. Verifique os dados do cartão.';
+      statusEl.className = 'text-center text-sm mt-4 text-red-600';
+    }
+
+  }catch(err){
+    alert(err.message);
+  }finally{
+    payButton.disabled=false;
+    payButton.innerHTML='Finalizar pagamento seguro';
+  }
+});
+</script>
+
+</body>
+</html>
